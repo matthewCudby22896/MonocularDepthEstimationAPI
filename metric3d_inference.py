@@ -7,7 +7,8 @@ import logging
 
 from mmengine.config import Config
 
-from mono.model.monodepth_model import get_monodepth_model
+from mono.model.monodepth_model import get_configured_monodepth_model, get_monodepth_model
+from mono.utils.running import load_ckpt
 
 Image = np.ndarray
 
@@ -56,20 +57,21 @@ def get_model(version: str):
         cfg = Config.fromfile(MODEL_CFG[version])
         
         # Initialize model
-        model = get_monodepth_model(cfg)
+        model = get_configured_monodepth_model(cfg, )
+        
+        model = torch.nn.DataParallel(model).cuda()
+        
+        weights_path = MODEL_WEIGHTS[version]
+        model, _,  _, _ = load_ckpt(weights_path, model, strict_match=False)
+        model.eval()
+        
         
         # Load checkpoint
-        weights_path = MODEL_WEIGHTS[version]
-        checkpoint = torch.load(weights_path, map_location="cuda" if torch.cuda.is_available() else "cpu")
+        # checkpoint = torch.load(weights_path, map_location="cuda" if torch.cuda.is_available() else "cpu")
         
-        if "state_dict" in checkpoint:
-            model.load_state_dict(checkpoint["state_dict"], strict=False)
-        else:
-            model.load_state_dict(checkpoint, strict=False)
         
         # Move to GPU and set to eval mode
-        model.to("cuda" if torch.cuda.is_available() else "cpu")
-        model.eval()
+        # model.to("cuda" if torch.cuda.is_available() else "cpu")
         
         models[version] = model
     
@@ -112,7 +114,7 @@ def estimate_depth(version : str, org_rgb : Image, focal_length_px : float) -> n
     model.cuda().eval()
     with torch.no_grad():
         s = time.time()
-        pred_depth, confidence, output_dict = model.inference({'input' : rgb})
+        pred_depth, confidence, output_dict = model.module.inference({'input' : rgb})
         e = time.time()
         logger.info(f"Model inference took {e - s} seconds\n\t{version=}\n\t{focal_length_px=}")
         
@@ -143,7 +145,7 @@ def estimate_depth(version : str, org_rgb : Image, focal_length_px : float) -> n
     pred_depth = pred_depth * canonical_to_real_scale # now the depth is metric
     pred_depth = torch.clamp(pred_depth, 0, 300)
     
-    pred_depth_np = pred_depth.cpy().numpy()
+    pred_depth_np = pred_depth.cpu().numpy()
     
     print(pred_depth_np)
     
