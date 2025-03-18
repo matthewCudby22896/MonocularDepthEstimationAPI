@@ -143,7 +143,9 @@ def estimate_depth(version : str, org_rgb : Image, focal_length_px : float) -> n
     pred_depth = pred_depth * canonical_to_real_scale # now the depth is metric
     pred_depth = torch.clamp(pred_depth, 0, 300)
     
-    pred_depth_np = pred_depth.numpy()
+    pred_depth_np = pred_depth.cpy().numpy()
+    
+    print(pred_depth_np)
     
     assert pred_depth_np.shape == org_rgb.shape[0:2]
     
