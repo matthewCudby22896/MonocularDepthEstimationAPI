@@ -1,40 +1,76 @@
 
+from flask import Config
 import torch
 import numpy as np
 import cv2
 import time
 import logging
 
+from mono.model.monodepth_model import get_monodepth_model
+
 Image = np.ndarray
 
-PADDING_CLR = [123.675, 116.28, 103.53]
-
-MODEL_VERSIONS = {
-    'small' : 'metric3d_vit_small',
-    'large' : 'metric3d_vit_large',
-    'giant' : 'metric3d_vit_giant2',
-}
-
-TORCH_HUB_USER = 'yvanyin/metric3d'
-
-vit_input_size = (616, 1064)
 
 logger = logging.getLogger(__name__)
-
-models = {}
 
 if not torch.cuda.is_available():
     raise Exception(f"cuda not available!")
 
-def _get_model(version : str):
+PADDING_CLR = [123.675, 116.28, 103.53]
+
+MODEL_VERSIONS = {
+    'small': 'metric3d_vit_small',
+    'large': 'metric3d_vit_large',
+    'giant': 'metric3d_vit_giant2',
+}
+
+MODEL_WEIGHTS = {
+    'small': "weight/metric_depth_vit_small_800k.pth",
+    'large': "weight/metric_depth_vit_large_800k.pth",
+    'giant': "weight/metric_depth_vit_giant2_800k.pth",
+}
+
+MODEL_CFG = {
+    'small': "mono/configs/HourglassDecoder/vit.raft5.small.py",
+    'large': "mono/configs/HourglassDecoder/vit.raft5.large.py",
+    'giant': "mono/configs/HourglassDecoder/vit.raft5.giant2.py",
+}
+
+TORCH_HUB_USER = 'yvanyin/metric3d'
+vit_input_size = (616, 1064)
+
+models = {}
+
+if not torch.cuda.is_available():
+    raise Exception("CUDA not available!")
+
+def get_model(version: str):
     if version not in MODEL_VERSIONS:
-        raise ValueError(f"Unkown version: {version}")
+        raise ValueError(f"Unknown version: {version}")
     
     if version not in models:
-        logger.info(f"loading model...")
-        models[version] = torch.hub.load(TORCH_HUB_USER, MODEL_VERSIONS[version], pretrain=True)
-    
-    logger.info(f"model loading complete.")
+        logger.info(f"Loading {version} model...")
+        
+        # Load configuration
+        cfg = Config.fromfile(MODEL_CFG[version])
+        
+        # Initialize model
+        model = get_monodepth_model(cfg)
+        
+        # Load checkpoint
+        weights_path = MODEL_WEIGHTS[version]
+        checkpoint = torch.load(weights_path, map_location="cuda" if torch.cuda.is_available() else "cpu")
+        
+        if "state_dict" in checkpoint:
+            model.load_state_dict(checkpoint["state_dict"], strict=False)
+        else:
+            model.load_state_dict(checkpoint, strict=False)
+        
+        # Move to GPU and set to eval mode
+        model.to("cuda" if torch.cuda.is_available() else "cpu")
+        model.eval()
+        
+        models[version] = model
     
     return models[version]
 
