@@ -5,10 +5,7 @@ import cv2
 import time
 import logging
 
-try:
-    from mmcv.utils import Config, DictAction
-except:
-    from mmengine import Config, DictAction
+from mmengine.config import Config
 
 from mono.model.monodepth_model import get_monodepth_model
 
