@@ -1,10 +1,11 @@
 
-from flask import Config
 import torch
 import numpy as np
 import cv2
 import time
 import logging
+
+from mmengine import Config
 
 from mono.model.monodepth_model import get_monodepth_model
 
