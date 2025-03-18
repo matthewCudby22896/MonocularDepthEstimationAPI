@@ -76,7 +76,7 @@ def get_model(version: str):
 
 
 def estimate_depth(version : str, org_rgb : Image, focal_length_px : float) -> np.ndarray:
-    model : torch.nn.Module = _get_model(version)
+    model : torch.nn.Module = get_model(version)
     
     focal_length_px = float(focal_length_px)
         
