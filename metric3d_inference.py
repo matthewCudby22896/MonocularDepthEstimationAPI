@@ -120,7 +120,7 @@ def estimate_depth(version : str, org_rgb : Image, focal_length_px : float) -> n
     confidence = confidence.squeeze()
     confidence = confidence[pad_info[0] : confidence.shape[0] - pad_info[1], pad_info[2] : confidence.shape[1] - pad_info[3]]
     confidence = torch.nn.functional.interpolate(confidence[None, None, :, :], org_rgb.shape[:2], mode='bilinear').squeeze()
-    confidence = confidence.numpy()
+    confidence = confidence.cpu().numpy()
     
     print("confidence:")
     print(f"{confidence.shape}")
