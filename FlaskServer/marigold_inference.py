@@ -5,7 +5,7 @@ import torch
 from FlaskServer.metric3d_inference import Image
 from Marigold.marigold.marigold_pipeline import MarigoldPipeline
 
-CHECKPOINT_PATH = ""
+CHECKPOINT_PATH = "checkpoint/marigold-lcm-v1-0"
 DENOISING_STEPS = 4 # (1-4 for LCM)
 ENSEMBLE_SIZE = 5   # (Ensemble size) 
 RESAMPLE_METHOD = 'bilinear'
