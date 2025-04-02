@@ -7,7 +7,7 @@ import torch
 from metric3d_inference import Image
 from Marigold.marigold.marigold_pipeline import MarigoldPipeline
 
-CHECKPOINT_PATH = "checkpoint/marigold-lcm-v1-0"
+CHECKPOINT_PATH = "./Marigold/checkpoint/marigold-lcm-v1-0"
 DENOISING_STEPS = 4 # (1-4 for LCM)
 ENSEMBLE_SIZE = 5   # (Ensemble size) 
 RESAMPLE_METHOD = 'bilinear'
@@ -39,7 +39,7 @@ def estimate_depth(image : Image,
     variant = None
     
     pipe: MarigoldPipeline = MarigoldPipeline.from_pretrained(
-        checkpoint_path, variant=variant, torch_dtype=dtype
+        checkpoint_path, variant=variant, torch_dtype=dtype, local_files_only=True
     )
     
     pipe = pipe.to(device)
