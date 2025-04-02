@@ -1,8 +1,10 @@
 import logging
+import os
+import sys
 import numpy as np
 import torch
 
-from FlaskServer.metric3d_inference import Image
+from metric3d_inference import Image
 from Marigold.marigold.marigold_pipeline import MarigoldPipeline
 
 CHECKPOINT_PATH = "checkpoint/marigold-lcm-v1-0"
