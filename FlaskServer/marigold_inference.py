@@ -38,13 +38,12 @@ def estimate_depth(image : Image,
         logging.warning("CUDA is not available. Running on CPU will be slow.")
     logging.info(f"device = {device}")
     
-    dtype = torch.float32
-    variant = None
-    
-    pipe: MarigoldPipeline = MarigoldPipeline.from_pretrained(
-        checkpoint_path, variant=variant, torch_dtype=dtype
+    pipe = MarigoldPipeline.from_pretrained(
+        checkpoint_path,
+        torch_dtype=torch.float32,
+        local_files_only=True
     )
-    
+
     pipe = pipe.to(device)
     logging.info(
         f"scale_invariant: {pipe.scale_invariant}, shift_invariant: {pipe.shift_invariant}"
