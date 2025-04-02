@@ -1,8 +1,11 @@
 import logging
 import os
 import sys
+import cv2
 import numpy as np
 import torch
+import io
+
 
 from metric3d_inference import Image
 from Marigold.marigold.marigold_pipeline import MarigoldPipeline
@@ -39,7 +42,7 @@ def estimate_depth(image : Image,
     variant = None
     
     pipe: MarigoldPipeline = MarigoldPipeline.from_pretrained(
-        checkpoint_path, variant=variant, torch_dtype=dtype, local_files_only=True
+        checkpoint_path, variant=variant, torch_dtype=dtype
     )
     
     pipe = pipe.to(device)
@@ -61,7 +64,8 @@ def estimate_depth(image : Image,
         else:
             generator = torch.Generator(device=device)
             generator.manual_seed(seed)
-            
+
+        image = cv2_image_to_pil_file_buffer(image)
         pipe_out = pipe(
                 image,
                 denoising_steps=denoise_steps,
@@ -77,3 +81,18 @@ def estimate_depth(image : Image,
         depth_pred: np.ndarray = pipe_out.depth_np
         
     return depth_pred
+
+
+def cv2_image_to_pil_file_buffer(image: np.ndarray, format: str = "PNG") -> io.BytesIO:
+    # Convert OpenCV BGR image to RGB for compatibility with PIL encoding expectations
+    rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+    # Encode image to chosen format (PNG default is lossless)
+    success, encoded_img = cv2.imencode(f'.{format.lower()}', rgb_image)
+    if not success:
+        raise ValueError("Failed to encode image")
+
+    # Wrap bytes in a BytesIO stream, as expected by PIL/open-style APIs
+    return io.BytesIO(encoded_img.tobytes())
+
+
