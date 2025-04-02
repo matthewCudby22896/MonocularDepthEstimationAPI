@@ -7,8 +7,8 @@ import logging
 
 from mmengine.config import Config
 
-from mono.model.monodepth_model import get_configured_monodepth_model, get_monodepth_model
-from mono.utils.running import load_ckpt
+from Metric3D.mono.model.monodepth_model import get_configured_monodepth_model, get_monodepth_model
+from Metric3D.mono.utils.running import load_ckpt
 
 Image = np.ndarray
 
@@ -65,14 +65,6 @@ def get_model(version: str):
         model, _,  _, _ = load_ckpt(weights_path, model, strict_match=False)
         model.eval()
         
-        
-        # Load checkpoint
-        # checkpoint = torch.load(weights_path, map_location="cuda" if torch.cuda.is_available() else "cpu")
-        
-        
-        # Move to GPU and set to eval mode
-        # model.to("cuda" if torch.cuda.is_available() else "cpu")
-        
         models[version] = model
     
     return models[version]
@@ -118,12 +110,12 @@ def estimate_depth(version : str, org_rgb : Image, focal_length_px : float) -> n
         e = time.time()
         logger.info(f"Model inference took {e - s} seconds\n\t{version=}\n\t{focal_length_px=}")
         
-    # TODO: Remove debugging
     confidence = confidence.squeeze()
     confidence = confidence[pad_info[0] : confidence.shape[0] - pad_info[1], pad_info[2] : confidence.shape[1] - pad_info[3]]
     confidence = torch.nn.functional.interpolate(confidence[None, None, :, :], org_rgb.shape[:2], mode='bilinear').squeeze()
     confidence_np = confidence.cpu().numpy()
     
+    # TODO: Remove debugging
     print("confidence:")
     print(f"{confidence_np.shape}")
     print(confidence_np)
