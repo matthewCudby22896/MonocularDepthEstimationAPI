@@ -2,11 +2,18 @@ import os
 import sys
 import cv2
 import numpy as np
+import logging
 
 sys.path.append(os.path.abspath("."))
 sys.path.append(os.path.abspath("./Metric3D"))
 sys.path.append(os.path.abspath("./Marigold"))
 
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='[%(levelname)s] %(message)s',
+    handlers=[logging.StreamHandler()]
+)
+logger = logging.getLogger(__name__)
 
 import marigold_inference
 import metric3d_inference
