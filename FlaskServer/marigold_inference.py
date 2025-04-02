@@ -17,7 +17,7 @@ RESAMPLE_METHOD = 'bilinear'
 SEED = 1
 BATCH_SIZE = 0
 MATCH_INPUT_RES = True
-PROCESSING_RES = 0 # zero for using input image resolution
+PROCESSING_RES = 512
 
 def estimate_depth(image : Image,
                    checkpoint_path : str = CHECKPOINT_PATH,
@@ -70,7 +70,7 @@ def estimate_depth(image : Image,
                 denoising_steps=denoise_steps,
                 ensemble_size=ensemble_size,
                 processing_res=processing_res,
-                match_input_res=True,
+                match_input_res=(processing_res > 0)
                 batch_size=1,
                 show_progress_bar=True,
                 resample_method=RESAMPLE_METHOD,
