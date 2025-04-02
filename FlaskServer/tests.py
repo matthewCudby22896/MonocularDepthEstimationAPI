@@ -3,7 +3,7 @@ import sys
 import cv2
 import numpy as np
 
-sys.path.append(os.path.abspath(".."))
+sys.path.append(os.path.abspath("."))
 
 import marigold_inference
 import metric3d_inference
