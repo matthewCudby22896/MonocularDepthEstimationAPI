@@ -4,6 +4,9 @@ import cv2
 import numpy as np
 
 sys.path.append(os.path.abspath("."))
+sys.path.append(os.path.abspath("./Metric3D"))
+sys.path.append(os.path.abspath("./Marigold"))
+
 
 import marigold_inference
 import metric3d_inference
