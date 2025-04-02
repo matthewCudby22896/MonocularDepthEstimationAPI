@@ -71,7 +71,7 @@ def estimate_depth(image : Image,
                 ensemble_size=ensemble_size,
                 processing_res=processing_res,
                 match_input_res=(processing_res > 0),
-                batch_size=1,
+                batch_size=0,
                 show_progress_bar=True,
                 resample_method=RESAMPLE_METHOD,
                 generator=generator,
@@ -86,19 +86,14 @@ def cv2_image_to_tensor(image: np.ndarray) -> torch.Tensor:
     if image is None or not isinstance(image, np.ndarray):
         raise ValueError("Invalid image passed to cv2_image_to_tensor")
 
-    # Convert BGR → RGB
+    # Convert BGR to RGB
     rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-    # Convert to float32 and normalize to [0, 1]
-    rgb_image = rgb_image.astype(np.float32) / 255.0
-
-    # Convert to CHW format
-    chw_image = np.transpose(rgb_image, (2, 0, 1))
-
-    # Add batch dimension: (1, 3, H, W)
-    tensor = torch.from_numpy(chw_image).unsqueeze(0)
+    # Normalisation is done within __call__() of MarigoldPipeline
+    tensor = torch.from_numpy(rgb_image).permute(2, 0, 1).unsqueeze(0)  # (1, 3, H, W)
 
     return tensor
+
 
 
 
