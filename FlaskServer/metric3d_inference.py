@@ -7,12 +7,11 @@ import cv2
 import time
 import logging
 
-sys.path.append(os.path.abspath(".."))
-
 from mmengine.config import Config
 
 from Metric3D.mono.model.monodepth_model import get_configured_monodepth_model, get_monodepth_model
 from Metric3D.mono.utils.running import load_ckpt
+
 
 Image = np.ndarray
 
@@ -31,15 +30,15 @@ MODEL_VERSIONS = {
 }
 
 MODEL_WEIGHTS = {
-    'small': "weight/metric_depth_vit_small_800k.pth",
-    'large': "weight/metric_depth_vit_large_800k.pth",
-    'giant': "weight/metric_depth_vit_giant2_800k.pth",
+    'small': "./Metric3D/weight/metric_depth_vit_small_800k.pth",
+    'large': "./Metric3D/weight/metric_depth_vit_large_800k.pth",
+    'giant': "./Metric3D/weight/metric_depth_vit_giant2_800k.pth",
 }
 
 MODEL_CFG = {
-    'small': "mono/configs/HourglassDecoder/vit.raft5.small.py",
-    'large': "mono/configs/HourglassDecoder/vit.raft5.large.py",
-    'giant': "mono/configs/HourglassDecoder/vit.raft5.giant2.py",
+    'small': "./Metric3D/mono/configs/HourglassDecoder/vit.raft5.small.py",
+    'large': "./Metric3D/mono/configs/HourglassDecoder/vit.raft5.large.py",
+    'giant': "./Metric3D/mono/configs/HourglassDecoder/vit.raft5.giant2.py",
 }
 
 TORCH_HUB_USER = 'yvanyin/metric3d'
