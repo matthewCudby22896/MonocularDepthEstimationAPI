@@ -65,7 +65,7 @@ def estimate_depth(image : Image,
             generator = torch.Generator(device=device)
             generator.manual_seed(seed)
 
-        image = cv2_image_to_pil_file_buffer(image)
+        image = cv2_image_to_tensor(image)
         pipe_out = pipe(
                 image,
                 denoising_steps=denoise_steps,
@@ -83,16 +83,23 @@ def estimate_depth(image : Image,
     return depth_pred
 
 
-def cv2_image_to_pil_file_buffer(image: np.ndarray, format: str = "PNG") -> io.BytesIO:
-    # Convert OpenCV BGR image to RGB for compatibility with PIL encoding expectations
+def cv2_image_to_tensor(image: np.ndarray) -> torch.Tensor:
+    if image is None or not isinstance(image, np.ndarray):
+        raise ValueError("Invalid image passed to cv2_image_to_tensor")
+
+    # Convert BGR → RGB
     rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-    # Encode image to chosen format (PNG default is lossless)
-    success, encoded_img = cv2.imencode(f'.{format.lower()}', rgb_image)
-    if not success:
-        raise ValueError("Failed to encode image")
+    # Convert to float32 and normalize to [0, 1]
+    rgb_image = rgb_image.astype(np.float32) / 255.0
 
-    # Wrap bytes in a BytesIO stream, as expected by PIL/open-style APIs
-    return io.BytesIO(encoded_img.tobytes())
+    # Convert to CHW format
+    chw_image = np.transpose(rgb_image, (2, 0, 1))
+
+    # Add batch dimension: (1, 3, H, W)
+    tensor = torch.from_numpy(chw_image).unsqueeze(0)
+
+    return tensor
+
 
 
