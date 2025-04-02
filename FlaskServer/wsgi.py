@@ -1,8 +1,12 @@
+import os
+import sys
 from flask import Flask, request, jsonify, send_file
 import io
 import logging
 import numpy as np
 import cv2
+
+sys.path.append(os.path.abspath("."))
 
 from FlaskServer import marigold_inference
 import metric3d_inference
