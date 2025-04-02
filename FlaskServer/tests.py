@@ -5,8 +5,8 @@ import numpy as np
 
 sys.path.append(os.path.abspath(".."))
 
-from FlaskServer import marigold_inference
-from FlaskServer import metric3d_inference
+import marigold_inference
+import metric3d_inference
 
 OUTPUT_DIR = "FlaskServer/test_outputs"
 IMAGE_PATH = "FlaskServer/test_images/image.png"
