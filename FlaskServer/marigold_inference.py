@@ -70,7 +70,7 @@ def estimate_depth(image : Image,
                 denoising_steps=denoise_steps,
                 ensemble_size=ensemble_size,
                 processing_res=processing_res,
-                match_input_res=(processing_res > 0)
+                match_input_res=(processing_res > 0),
                 batch_size=1,
                 show_progress_bar=True,
                 resample_method=RESAMPLE_METHOD,
