@@ -42,11 +42,6 @@ def estimate_depth(image : Image,
         checkpoint_path, variant=variant, torch_dtype=dtype
     )
     
-    try:
-        pipe.enable_xformers_memory_efficient_attention()
-    except ImportError:
-        pass  # run without xformers
-    
     pipe = pipe.to(device)
     logging.info(
         f"scale_invariant: {pipe.scale_invariant}, shift_invariant: {pipe.shift_invariant}"
