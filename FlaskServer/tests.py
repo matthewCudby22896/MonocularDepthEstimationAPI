@@ -1,6 +1,9 @@
 import os
+import sys
 import cv2
 import numpy as np
+
+sys.path.append(os.path.abspath(".."))
 
 from FlaskServer import marigold_inference
 from FlaskServer import metric3d_inference
