@@ -56,3 +56,6 @@ def test_MDE():
     cv2.imwrite(os.path.join(OUTPUT_DIR, "metric3d_confidence_vis.png"), confidence_vis)
 
     print("Depth visualizations saved to:", OUTPUT_DIR)
+
+if __name__ == "__main__":
+    test_MDE()
