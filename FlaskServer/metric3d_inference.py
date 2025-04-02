@@ -1,9 +1,13 @@
 
+import os
+import sys
 import torch
 import numpy as np
 import cv2
 import time
 import logging
+
+sys.path.append(os.path.abspath(".."))
 
 from mmengine.config import Config
 
