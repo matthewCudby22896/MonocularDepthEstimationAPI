@@ -3,6 +3,7 @@ import sys
 import cv2
 import numpy as np
 import logging
+import time
 
 sys.path.append(os.path.abspath("."))
 sys.path.append(os.path.abspath("./Metric3D"))
@@ -39,14 +40,18 @@ def test_MDE():
         raise FileNotFoundError(f"Failed to load image from {IMAGE_PATH}")
     
     logger.info(f"Running Marigold inference...")
+    s = time.time()
     marigold_depth = marigold_inference.estimate_depth(image)
     logger.info(f"Marigold: image shape: {image.shape}, depth map shape: {marigold_depth.shape}")
     assert marigold_depth.shape == image.shape
+    marigold_time = time.time() - s
 
     logger.info("Running Metric3D inference...")
+    s = time.time()
     metric3d_depth, confidence = metric3d_inference.estimate_depth(
         version='giant', org_rgb=image, focal_length_px=1000
     )
+    metric3d_time = time.time()
     logger.info(f"Metric3D: image shape: {image.shape}, depth map shape: {metric3d_depth.shape}")
     assert metric3d_depth.shape == image.shape
 
@@ -54,6 +59,8 @@ def test_MDE():
     marigold_vis = normalise_and_colourise(marigold_depth)
     metric3d_vis = normalise_and_colourise(metric3d_depth)
     confidence_vis = normalise_and_colourise(confidence)
+    
+    logger.info(f"Inference Times:\n\tMarigold: {marigold_time}\n\tMetric3D: {metric3d_time}")
 
     cv2.imwrite(os.path.join(OUTPUT_DIR, "marigold_depth_vis.png"), marigold_vis)
     cv2.imwrite(os.path.join(OUTPUT_DIR, "metric3d_depth_vis.png"), metric3d_vis)
