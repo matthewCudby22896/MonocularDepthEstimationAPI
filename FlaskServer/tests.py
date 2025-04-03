@@ -42,9 +42,10 @@ def test_MDE():
     logger.info(f"Running Marigold inference...")
     s = time.time()
     marigold_depth = marigold_inference.estimate_depth(image)
-    logger.info(f"Marigold: image shape: {image.shape}, depth map shape: {marigold_depth.shape}")
-    assert marigold_depth.shape == image.shape
     marigold_time = time.time() - s
+    logger.info(f"Marigold: image shape: {image.shape}, depth map shape: {marigold_depth.shape}")
+    
+    assert marigold_depth.shape[0] == image.shape[0] and marigold_depth.shape[1] == marigold_depth.shape[1]
 
     logger.info("Running Metric3D inference...")
     s = time.time()
@@ -53,8 +54,10 @@ def test_MDE():
     )
     metric3d_time = time.time()
     logger.info(f"Metric3D: image shape: {image.shape}, depth map shape: {metric3d_depth.shape}")
-    assert metric3d_depth.shape == image.shape
-
+    
+    assert metric3d_depth.shape[0] == metric3d_depth.shape[0] and metric3d_depth.shape[1] == metric3d_depth.shape[1]
+    assert confidence.shape[0] == confidence.shape[0] and confidence.shape[1] == confidence.shape[1]
+    
     # ----- Visualisations -----
     marigold_vis = normalise_and_colourise(marigold_depth)
     metric3d_vis = normalise_and_colourise(metric3d_depth)

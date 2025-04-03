@@ -118,14 +118,6 @@ def estimate_depth(version : str, org_rgb : Image, focal_length_px : float) -> n
     confidence = torch.nn.functional.interpolate(confidence[None, None, :, :], org_rgb.shape[:2], mode='bilinear').squeeze()
     confidence_np = confidence.cpu().numpy()
     
-    # TODO: Remove debugging
-    print("confidence:")
-    print(f"{confidence_np.shape}")
-    print(confidence_np)
-    print(f"max val : {np.max(confidence_np)}")
-    print(f"min val : {np.min(confidence_np)}")
-    # NOTE: End debugging
-    
     # un pad
     pred_depth = pred_depth.squeeze()
     pred_depth = pred_depth[pad_info[0] : pred_depth.shape[0] - pad_info[1], pad_info[2] : pred_depth.shape[1] - pad_info[3]]
@@ -141,8 +133,6 @@ def estimate_depth(version : str, org_rgb : Image, focal_length_px : float) -> n
     pred_depth = torch.clamp(pred_depth, 0, 300)
     
     pred_depth_np = pred_depth.cpu().numpy()
-    
-    print(pred_depth_np)
     
     assert pred_depth_np.shape == org_rgb.shape[0:2]
     
