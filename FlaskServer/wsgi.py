@@ -9,6 +9,7 @@ import cv2
 sys.path.append(os.path.abspath("."))
 sys.path.append(os.path.abspath("./Metric3D"))
 sys.path.append(os.path.abspath("./Marigold"))
+sys.path.append(os.path.abspath("./FlaskServer"))
 
 from FlaskServer import marigold_inference
 import metric3d_inference
