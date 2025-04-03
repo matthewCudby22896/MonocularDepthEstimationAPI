@@ -23,39 +23,43 @@ IMAGE_PATH = "FlaskServer/test_images/image.png"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-def normalize_and_colorize(depth: np.ndarray, clip_percentile: float = 95) -> np.ndarray:
-    """ Normalize and apply colormap to depth map for visualization. """
+def normalise_and_colourise(depth: np.ndarray, clip_percentile: float = 95) -> np.ndarray:
+    """ Normalise and apply colourmap to depth map for visualisation. """
     max_val = np.percentile(depth, clip_percentile)
     min_val = np.min(depth)
 
     norm = np.clip((depth - min_val) / (max_val - min_val), 0, 1)
     depth_vis = (norm * 255).astype(np.uint8)
-    color_map = cv2.applyColorMap(depth_vis, cv2.COLORMAP_INFERNO)
-    return color_map
+    colour_map = cv2.applyColorMap(depth_vis, cv2.COLORMAP_INFERNO)
+    return colour_map
 
 def test_MDE():
     image = cv2.imread(IMAGE_PATH)
     if image is None:
         raise FileNotFoundError(f"Failed to load image from {IMAGE_PATH}")
     
-    print("Running Marigold inference...")
+    logger.info(f"Running Marigold inference...")
     marigold_depth = marigold_inference.estimate_depth(image)
-    
-    print("Running Metric3D inference...")
+    logger.info(f"Marigold: image shape: {image.shape}, depth map shape: {marigold_depth.shape}")
+    assert marigold_depth.shape == image.shape
+
+    logger.info("Running Metric3D inference...")
     metric3d_depth, confidence = metric3d_inference.estimate_depth(
         version='giant', org_rgb=image, focal_length_px=1000
     )
+    logger.info(f"Metric3D: image shape: {image.shape}, depth map shape: {metric3d_depth.shape}")
+    assert metric3d_depth.shape == image.shape
 
-    # ----- Visualizations -----
-    marigold_vis = normalize_and_colorize(marigold_depth)
-    metric3d_vis = normalize_and_colorize(metric3d_depth)
-    confidence_vis = normalize_and_colorize(confidence)
+    # ----- Visualisations -----
+    marigold_vis = normalise_and_colourise(marigold_depth)
+    metric3d_vis = normalise_and_colourise(metric3d_depth)
+    confidence_vis = normalise_and_colourise(confidence)
 
     cv2.imwrite(os.path.join(OUTPUT_DIR, "marigold_depth_vis.png"), marigold_vis)
     cv2.imwrite(os.path.join(OUTPUT_DIR, "metric3d_depth_vis.png"), metric3d_vis)
     cv2.imwrite(os.path.join(OUTPUT_DIR, "metric3d_confidence_vis.png"), confidence_vis)
 
-    print("Depth visualizations saved to:", OUTPUT_DIR)
+    logger.info(f"Depth visualisations saved to: {OUTPUT_DIR}")
 
 if __name__ == "__main__":
     test_MDE()
