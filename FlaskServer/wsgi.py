@@ -118,7 +118,11 @@ def run_inference():
     # Encode result to .npz
     try:
         buffer = io.BytesIO()
-        np.savez(buffer, depth_map=depth_map, confidence=confidence)
+        if depth_map is not None and confidence is not None:
+            np.savez(buffer, depth_map=depth_map, confidence=confidence)
+        else:
+            np.savez(buffer, depth_map=depth_map)
+        
         buffer.seek(0)
     except Exception as e:
         logger.exception("Failed to serialize inference results")
