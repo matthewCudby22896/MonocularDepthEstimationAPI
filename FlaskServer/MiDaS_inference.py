@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-MODEL_PATH = ""  # You should specify this
+MODEL_PATH = "./MiDaS/weights/dpt_beit_large_512.pt"
 MODEL_TYPE = "dpt_beit_large_512"
 OPTIMIZE = False
 

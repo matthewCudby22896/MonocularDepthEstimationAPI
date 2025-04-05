@@ -12,7 +12,7 @@ from Marigold.marigold.marigold_pipeline import MarigoldPipeline
 
 CHECKPOINT_PATH = "./Marigold/checkpoint/marigold-lcm-v1-0"
 DENOISING_STEPS = 4 # (1-4 for LCM)
-ENSEMBLE_SIZE = 10   # (Ensemble size) 
+ENSEMBLE_SIZE = 1   # (Ensemble size) 
 RESAMPLE_METHOD = 'bilinear'
 SEED = 1
 BATCH_SIZE = 0
