@@ -98,3 +98,6 @@ def test_MDE():
     logger.info("\n--- Inference Time Summary ---")
     logger.info(f"Marigold: {marigold_time:.2f}s\nMetric3D: {metric3d_time:.2f}s\nMiDaS: {midas_time:.2f}s")
     logger.info("All available visualisations and depth maps saved to: %s", OUTPUT_DIR)
+    
+if __name__ == "__main__":
+    test_MDE()
