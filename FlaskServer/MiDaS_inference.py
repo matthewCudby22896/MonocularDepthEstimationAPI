@@ -15,6 +15,8 @@ MODEL_TYPE = "dpt_beit_large_512"
 OPTIMIZE = False
 
 def monocular_depth_estimation(image_np: np.ndarray) -> np.ndarray:
+    logger.info("MiDas")
+    
     # Load MiDaS model
     model, transform, net_w, net_h = load_model(
         device,
@@ -43,5 +45,9 @@ def monocular_depth_estimation(image_np: np.ndarray) -> np.ndarray:
             OPTIMIZE,
             use_camera=False
         )
+    
+    logger.info("Prediction Complete")
+    
+    print(prediction)
 
     return prediction
