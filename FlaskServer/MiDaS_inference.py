@@ -28,7 +28,7 @@ def monocular_depth_estimation(image_np: np.ndarray) -> np.ndarray:
     )
 
     # Convert BGR to RGB if needed
-    image_rgb = cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB)
+    image_rgb = cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB) / 255
 
     # Prepare input for the model
     sample = transform({'image': image_rgb})["image"]
