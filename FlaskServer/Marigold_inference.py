@@ -7,7 +7,7 @@ import torch
 import io
 
 
-from metric3d_inference import Image
+from FlaskServer.Metric3D_inference import Image
 from Marigold.marigold.marigold_pipeline import MarigoldPipeline
 
 CHECKPOINT_PATH = "./Marigold/checkpoint/marigold-lcm-v1-0"
