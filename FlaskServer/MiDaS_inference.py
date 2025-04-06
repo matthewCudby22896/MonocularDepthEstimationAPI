@@ -36,7 +36,7 @@ def monocular_depth_estimation(image_np: ImageNP) -> np.ndarray:
 
     # Predict depth
     with torch.no_grad():
-        pred_disparity = process(
+        pred_disparity : np.ndarray= process(
             device,
             model,
             MODEL_TYPE,
@@ -47,8 +47,8 @@ def monocular_depth_estimation(image_np: ImageNP) -> np.ndarray:
             use_camera=False
         )
     
-    pred_depth = 1 / (pred_disparity + 1e-8) 
+    pred_depth : np.ndarray = 1 / (pred_disparity + 1e-8) 
     
-    return pred_depth
+    return pred_depth.astype(np.float32)
     
 

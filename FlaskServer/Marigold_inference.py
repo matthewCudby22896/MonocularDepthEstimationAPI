@@ -72,7 +72,7 @@ def monocular_depth_estimation(image : ImageNP,
     
         depth_pred: np.ndarray = pipe_out.depth_np
         
-    return depth_pred
+    return depth_pred.astype(np.float32)
 
 
 def cv2_image_to_tensor(image: ImageNP) -> torch.Tensor:

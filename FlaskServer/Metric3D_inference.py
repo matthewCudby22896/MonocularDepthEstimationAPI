@@ -127,5 +127,5 @@ def monocular_depth_estimation(version : str, org_rgb : ImageNP, focal_length_px
     
     assert pred_depth_np.shape == org_rgb.shape[0:2]
     
-    return pred_depth_np, confidence_np
+    return pred_depth_np.astype(np.float32), confidence_np.astype(np.float32)
 
