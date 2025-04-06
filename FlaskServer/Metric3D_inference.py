@@ -36,8 +36,7 @@ MODEL_CFG = {
     'giant': "./Metric3D/mono/configs/HourglassDecoder/vit.raft5.giant2.py",
 }
 
-TORCH_HUB_USER = 'yvanyin/metric3d'
-vit_input_size = (616, 1064)
+VIT_INPUT_SIZE = (616, 1064)
 
 models = {}
 
@@ -77,7 +76,7 @@ def monocular_depth_estimation(version : str, org_rgb : ImageNP, focal_length_px
     
     # Rescale the image to fit the expected input size
     h, w = org_rgb.shape[:2]
-    scale = min(vit_input_size[0] / h, vit_input_size[1] / w)
+    scale = min(VIT_INPUT_SIZE[0] / h, VIT_INPUT_SIZE[1] / w)
     rgb = cv2.resize(org_rgb, (int(w * scale), int(h * scale)), interpolation=cv2.INTER_LINEAR)
     
     # Scale the camera intrinsics, in the same way
@@ -85,7 +84,7 @@ def monocular_depth_estimation(version : str, org_rgb : ImageNP, focal_length_px
     
     # Add padding s.t. the input exactly fits the expect input size
     h, w = rgb.shape[:2]
-    pad_h, pad_w = vit_input_size[0] - h, vit_input_size[1] - w
+    pad_h, pad_w = VIT_INPUT_SIZE[0] - h, VIT_INPUT_SIZE[1] - w
     pad_h_half, pad_w_half = pad_h // 2, pad_w // 2
     pad_info = [pad_h_half, pad_h - pad_h_half, pad_w_half, pad_w - pad_w_half]
     rgb = cv2.copyMakeBorder(rgb, pad_h_half, pad_h - pad_h_half, pad_w_half, pad_w - pad_w_half, cv2.BORDER_CONSTANT, value=PADDING_CLR)
