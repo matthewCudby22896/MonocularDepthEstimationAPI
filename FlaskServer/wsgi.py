@@ -140,20 +140,14 @@ def model_inference(img_bgr : ImageNP,
     depth_map, confidence = None, None
 
     if model == METRIC_3D:
-        depth_map, confidence = Metric3D_inference.monocular_depth_estimation(
-            image_bgr=img_bgr,
-            version=version,
-            focal_length_px=focal_length
-        )
+        depth_map, confidence = Metric3D_inference.monocular_depth_estimation(version, img_bgr, focal_length)
 
     elif model == MARIGOLD:
-        depth_map = Marigold_inference.monocular_depth_estimation(image_bgr=img_bgr, 
-                                                                  denoise_steps=denoising_steps,
-                                                                  ensemble_size=ensemble_size)
+        depth_map = Marigold_inference.monocular_depth_estimation(img_bgr, denoising_steps, ensemble_size)
         confidence = None  # Marigold does not return confidence
     
     if model == MIDAS:
-        depth_map = MiDaS_inference.monocular_depth_estimation(image_bgr=img_bgr)
+        depth_map = MiDaS_inference.monocular_depth_estimation(img_bgr)
         confidence = None  # MiDaS does not return confidence
         
     assert depth_map.size[0:2] == img_bgr.size[0:2]
