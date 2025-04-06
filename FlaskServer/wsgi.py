@@ -123,39 +123,40 @@ def run_inference():
 def decode_image(request) -> ImageNP:
     image_bytes = request.files['image'].read()
     npimg = np.frombuffer(image_bytes, np.uint8)
-    img: ImageNP = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
+    img_bgr: ImageNP = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
 
-    if img is None or img.ndim != 3 or img.shape[2] != 3:
+    if img_bgr is None or img_bgr.ndim != 3 or img_bgr.shape[2] != 3:
         raise ValueError("Invalid image format")
 
-    return img
+    return img_bgr
 
-def model_inference(img : ImageNP,
-                  version : str,
-                  model : str,
-                  focal_length : float,
-                  denoising_steps : int,
-                  ensemble_size : int) -> Tuple[np.ndarray, np.ndarray]:
+def model_inference(img_bgr : ImageNP,
+                    version : str,
+                    model : str,
+                    focal_length : float,
+                    denoising_steps : int,
+                    ensemble_size : int) -> Tuple[np.ndarray, np.ndarray]:
     
     depth_map, confidence = None, None
 
     if model == METRIC_3D:
         depth_map, confidence = Metric3D_inference.monocular_depth_estimation(
             version=version,
-            org_rgb=img,
+            org_brg=img_bgr,
             focal_length_px=focal_length
         )
 
     elif model == MARIGOLD:
-        depth_map = Marigold_inference.monocular_depth_estimation(img, 
+        depth_map = Marigold_inference.monocular_depth_estimation(image_bgr=img_bgr, 
                                                                   denoise_steps=denoising_steps,
                                                                   ensemble_size=ensemble_size)
         confidence = None  # Marigold does not return confidence
     
     if model == MIDAS:
-        depth_map = MiDaS_inference.monocular_depth_estimation(img)
+        depth_map = MiDaS_inference.monocular_depth_estimation(image_bgr=img_bgr)
         confidence = None  # MiDaS does not return confidence
         
+
     assert depth_map.shape[0:2] == img.shape[0:2]
     assert confidence is None or confidence.shape == img.shape[0:2]
     
