@@ -10,6 +10,7 @@ sys.path.append(os.path.abspath("."))
 sys.path.append(os.path.abspath("./Metric3D"))
 sys.path.append(os.path.abspath("./Marigold"))
 sys.path.append(os.path.abspath("./FlaskServer"))
+sys.path.append(os.path.abspath("./MiDaS"))
 
 from FlaskServer import Marigold_inference
 from FlaskServer import Metric3D_inference
