@@ -23,6 +23,8 @@ def monocular_depth_estimation(image : ImageNP,
     assert isinstance(image, np.ndarray), "Input image must be a numpy array"
     assert image.ndim == 3 and image.shape[2] == 3, "Expected BGR image (H, W, 3)"
     
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    
     if torch.cuda.is_available():
         device = torch.device("cuda")
     else:

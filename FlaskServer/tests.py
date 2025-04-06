@@ -38,8 +38,8 @@ def visualise_depth_map(depth: np.ndarray, clip_percentile: float = 95) -> np.nd
     return colour_map
 
 def test_MDE():
-    image = cv2.imread(IMAGE_PATH)
-    if image is None:
+    image_bgr = cv2.imread(IMAGE_PATH)
+    if image_bgr is None:
         raise FileNotFoundError(f"Failed to load image from {IMAGE_PATH}")
 
     marigold_time = metric3d_time = midas_time = 0
@@ -48,11 +48,11 @@ def test_MDE():
     try:
         logger.info(f"Running Marigold inference...")
         s = time.time()
-        marigold_depth = Marigold_inference.monocular_depth_estimation(image)
+        marigold_depth = Marigold_inference.monocular_depth_estimation(image_bgr)
         marigold_time = time.time() - s
         logger.info(f"[Marigold] Inference time: {marigold_time:.2f}s")
 
-        logger.info(f"Marigold: image shape: {image.shape}, depth shape: {marigold_depth.shape}")
+        logger.info(f"Marigold: image shape: {image_bgr.shape}, depth shape: {marigold_depth.shape}")
         marigold_vis = visualise_depth_map(marigold_depth)
         cv2.imwrite(os.path.join(OUTPUT_DIR, "marigold_depth_vis.png"), marigold_vis)
 
@@ -65,7 +65,7 @@ def test_MDE():
         logger.info("Running Metric3D inference...")
         s = time.time()
         metric3d_depth, confidence  = Metric3D_inference.monocular_depth_estimation(
-            version='giant', org_rgb=image, focal_length_px=1000
+            version='giant', org_rgb=image_bgr, focal_length_px=1000
         )
         metric3d_time = time.time() - s
         logger.info(f"[Metric3D] Inference time: {metric3d_time:.2f}s")
@@ -83,7 +83,7 @@ def test_MDE():
     try:
         logger.info("Running MiDaS inference...")
         s = time.time()
-        midas_depth = MiDaS_inference.monocular_depth_estimation(image)
+        midas_depth = MiDaS_inference.monocular_depth_estimation(image_bgr)
         midas_time = time.time() - s
         logger.info(f"[MiDaS] Inference time: {midas_time:.2f}s")
 

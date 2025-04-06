@@ -20,7 +20,7 @@ def monocular_depth_estimation(image_np: ImageNP) -> np.ndarray:
     
     # Load MiDaS model
     model, transform, net_w, net_h = load_model(
-        device,
+        device,transform
         MODEL_PATH,
         MODEL_TYPE,
         optimize=OPTIMIZE,
@@ -36,7 +36,7 @@ def monocular_depth_estimation(image_np: ImageNP) -> np.ndarray:
 
     # Predict depth
     with torch.no_grad():
-        pred_disparity : np.ndarray= process(
+        pred_disparity : np.ndarray = process(
             device,
             model,
             MODEL_TYPE,
@@ -57,7 +57,6 @@ def monocular_depth_estimation(image_np: ImageNP) -> np.ndarray:
     # Assign farthest possible value to invalid (e.g. sky)
     max_depth = pred_depth[valid_mask].max()
     pred_depth[~valid_mask] = max_depth
-
     
     return pred_depth.astype(np.float32)
     

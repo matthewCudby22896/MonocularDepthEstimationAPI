@@ -66,10 +66,10 @@ def get_model(version: str):
     
     return models[version]
 
-def monocular_depth_estimation(version : str, org_rgb : ImageNP, focal_length_px : float) -> np.ndarray:
+def monocular_depth_estimation(version : str, org_bgr : ImageNP, focal_length_px : float) -> np.ndarray:
     model : torch.nn.Module = get_model(version)
     
-    focal_length_px = float(focal_length_px)
+    org_rgb = cv2.cvtColor(org_bgr, cv2.COLOR_BGR2RGB)
         
     h, w = org_rgb.shape[:2]
     intrinsic = [focal_length_px, focal_length_px, w // 2, h // 2] # (f_x, f_y, px, py)
