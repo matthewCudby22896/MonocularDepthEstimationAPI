@@ -47,7 +47,17 @@ def monocular_depth_estimation(image_np: ImageNP) -> np.ndarray:
             use_camera=False
         )
     
-    pred_depth : np.ndarray = 1 / (pred_disparity + 1e-8) 
+    # Avoid messing with valid values
+    valid_mask = pred_disparity > 0
+
+    # Safely invert only valid points
+    pred_depth = np.zeros_like(pred_disparity)
+    pred_depth[valid_mask] = 1.0 / pred_disparity[valid_mask]
+
+    # Assign farthest possible value to invalid (e.g. sky)
+    max_depth = pred_depth[valid_mask].max()
+    pred_depth[~valid_mask] = max_depth
+
     
     return pred_depth.astype(np.float32)
     
