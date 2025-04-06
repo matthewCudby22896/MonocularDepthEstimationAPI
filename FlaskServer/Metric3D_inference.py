@@ -13,7 +13,6 @@ from Metric3D.mono.model.monodepth_model import get_configured_monodepth_model, 
 from Metric3D.mono.utils.running import load_ckpt
 
 
-Image = np.ndarray
 
 
 logger = logging.getLogger(__name__)
@@ -73,7 +72,7 @@ def get_model(version: str):
     return models[version]
 
 
-def estimate_depth(version : str, org_rgb : Image, focal_length_px : float) -> np.ndarray:
+def monocular_depth_estimation(version : str, org_rgb : Image, focal_length_px : float) -> np.ndarray:
     model : torch.nn.Module = get_model(version)
     
     focal_length_px = float(focal_length_px)

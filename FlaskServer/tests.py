@@ -48,7 +48,7 @@ def test_MDE():
     try:
         logger.info(f"Running Marigold inference...")
         s = time.time()
-        marigold_depth = Marigold_inference.estimate_depth(image)
+        marigold_depth = Marigold_inference.monocular_depth_estimation(image)
         marigold_time = time.time() - s
         logger.info(f"[Marigold] Inference time: {marigold_time:.2f}s")
 
@@ -64,7 +64,7 @@ def test_MDE():
     try:
         logger.info("Running Metric3D inference...")
         s = time.time()
-        metric3d_depth, confidence = Metric3D_inference.estimate_depth(
+        metric3d_depth, confidence = Metric3D_inference.monocular_depth_estimation(
             version='giant', org_rgb=image, focal_length_px=1000
         )
         metric3d_time = time.time() - s

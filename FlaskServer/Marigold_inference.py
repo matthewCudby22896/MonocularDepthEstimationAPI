@@ -1,11 +1,7 @@
 import logging
-import os
-import sys
 import cv2
 import numpy as np
 import torch
-import io
-
 
 from FlaskServer.Metric3D_inference import Image
 from Marigold.marigold.marigold_pipeline import MarigoldPipeline
@@ -14,22 +10,18 @@ CHECKPOINT_PATH = "./Marigold/checkpoint/marigold-lcm-v1-0"
 DENOISING_STEPS = 3 # (1-4 for LCM)
 ENSEMBLE_SIZE = 3   # (Ensemble size) 
 RESAMPLE_METHOD = 'bilinear'
-SEED = 1
+SEED = 1 # Ensures results are deterministic
 BATCH_SIZE = 0
 MATCH_INPUT_RES = True
 PROCESSING_RES = 1064
 
-def estimate_depth(image : Image,
-                   checkpoint_path : str = CHECKPOINT_PATH,
+def monocular_depth_estimation(image : Image,
                    denoise_steps : int = DENOISING_STEPS,
                    ensemble_size : int = ENSEMBLE_SIZE,
-                   processing_res : int = PROCESSING_RES,
                    seed : int = SEED) -> np.array:
-    """
-    """
+    
     assert isinstance(image, np.ndarray), "Input image must be a numpy array"
-    assert image.ndim == 3 and image.shape[2] == 3, "Expected RGB image (H, W, 3)"
-
+    assert image.ndim == 3 and image.shape[2] == 3, "Expected BGR image (H, W, 3)"
     
     if torch.cuda.is_available():
         device = torch.device("cuda")
@@ -39,7 +31,7 @@ def estimate_depth(image : Image,
     logging.info(f"device = {device}")
     
     pipe = MarigoldPipeline.from_pretrained(
-        checkpoint_path,
+        CHECKPOINT_PATH,
         torch_dtype=torch.float32,
         local_files_only=True
     )
@@ -50,10 +42,10 @@ def estimate_depth(image : Image,
     )
     
     logging.info(
-        f"Inference settings: checkpoint = `{checkpoint_path}`, "
+        f"Inference settings: checkpoint = `{CHECKPOINT_PATH}`, "
         f"with denoise_steps = {denoise_steps or pipe.default_denoising_steps}, "
         f"ensemble_size = {ensemble_size}, "
-        f"processing resolution = {processing_res or pipe.default_processing_resolution}, "
+        f"processing resolution = {PROCESSING_RES or pipe.default_processing_resolution}, "
         f"seed = {seed}; "
     )
     
@@ -69,8 +61,8 @@ def estimate_depth(image : Image,
                 image,
                 denoising_steps=denoise_steps,
                 ensemble_size=ensemble_size,
-                processing_res=processing_res,
-                match_input_res=(processing_res > 0),
+                processing_res=PROCESSING_RES,
+                match_input_res=(PROCESSING_RES > 0),
                 batch_size=0,
                 show_progress_bar=True,
                 resample_method=RESAMPLE_METHOD,
