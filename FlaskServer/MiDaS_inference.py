@@ -48,7 +48,6 @@ def monocular_depth_estimation(image_np: ImageNP) -> np.ndarray:
         )
     
     pred_depth = 1 / (pred_disparity + 1e-8) 
-    pred_depth[pred_disparity <= 0] = 0
     
     return pred_depth
     

@@ -64,7 +64,7 @@ def test_MDE():
     try:
         logger.info("Running Metric3D inference...")
         s = time.time()
-        metric3d_depth, confidence = Metric3D_inference.monocular_depth_estimation(
+        metric3d_depth, confidence  = Metric3D_inference.monocular_depth_estimation(
             version='giant', org_rgb=image, focal_length_px=1000
         )
         metric3d_time = time.time() - s
