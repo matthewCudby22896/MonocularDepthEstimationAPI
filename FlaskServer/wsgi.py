@@ -141,8 +141,8 @@ def model_inference(img_bgr : ImageNP,
 
     if model == METRIC_3D:
         depth_map, confidence = Metric3D_inference.monocular_depth_estimation(
+            image_bgr=img_bgr,
             version=version,
-            org_brg=img_bgr,
             focal_length_px=focal_length
         )
 
