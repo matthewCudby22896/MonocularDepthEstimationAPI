@@ -20,8 +20,8 @@ def monocular_depth_estimation(image_bgr : ImageNP,
                    ensemble_size : int = ENSEMBLE_SIZE,
                    seed : int = SEED) -> np.array:
     
-    assert isinstance(image, np.ndarray), "Input image must be a numpy array"
-    assert image.ndim == 3 and image.shape[2] == 3, "Expected BGR image (H, W, 3)"
+    assert isinstance(image_bgr, np.ndarray), f"Input image must be a numpy array, got type={type(image_bgr)}"
+    assert image_bgr.ndim == 3 and image_bgr.shape[2] == 3, f"Expected BGR image (H, W, 3), got shape={image_bgr.shape}"
     
     image = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
     
