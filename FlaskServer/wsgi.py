@@ -74,10 +74,21 @@ def run_inference():
         if denoising_steps is None:
             logger.info(f"'denoising_steps' parameter not received, reverting to default={DEFAULT_DENOISING_STEPS}")
             denoising_steps = DEFAULT_DENOISING_STEPS
+	else:
+	    try:
+		denoising_steps = int(denoising_steps)
+	    except e as Exception:
+	        logger.error(f"Invalid 'denoising_steps' must be be an int")
+		return jsonify('error' : 'Invalid denoising_steps. Must be an int.'), 400
         if ensemble_size is None:
             ensemble_size = DEFAULT_ENSEMBLE_SIZE
             logger.info(f"'ensemble_size' parameter not received, reverting to default={DEFAULT_ENSEMBLE_SIZE}")
-            
+       	else:
+	    try:
+		ensemble_size = int(ensemble_size)
+            except e as Exception:
+                logger.info("Invalid 'ensemble_size' must be an int")
+		return jsonify('error' : 'Invalid ensemble_size. Must be an int.'), 400
     # Decode image
     try:
         img = decode_image(request)
