@@ -15,19 +15,21 @@ MODEL_PATH = "./MiDaS/weights/dpt_beit_large_512.pt"
 MODEL_TYPE = "dpt_beit_large_512"
 OPTIMIZE = False
 
+model, transform, net_w, net_h = None
+
 def monocular_depth_estimation(image_bgr: ImageNP) -> np.ndarray:
     logger.info("MiDas")
     
-    # Load MiDaS model
-    model, transform, net_w, net_h = load_model(
-        device,
-        MODEL_PATH,
-        MODEL_TYPE,
-        optimize=OPTIMIZE,
-        height=512,
-        square=False
-    )
-
+    if model is None:
+        model, transform, net_w, net_h = load_model(
+            device,
+            MODEL_PATH,
+            MODEL_TYPE,
+            optimize=OPTIMIZE,
+            height=512,
+            square=False
+        )
+            
     # Convert BGR to RGB if needed
     image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB) / 255
 
