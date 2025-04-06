@@ -20,7 +20,7 @@ def monocular_depth_estimation(image_np: ImageNP) -> np.ndarray:
     
     # Load MiDaS model
     model, transform, net_w, net_h = load_model(
-        device,transform
+        device,
         MODEL_PATH,
         MODEL_TYPE,
         optimize=OPTIMIZE,

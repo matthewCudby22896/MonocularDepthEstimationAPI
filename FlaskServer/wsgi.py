@@ -156,7 +156,7 @@ def model_inference(img : ImageNP,
         depth_map = MiDaS_inference.monocular_depth_estimation(img)
         confidence = None  # MiDaS does not return confidence
         
-    assert depth_map.size[0:2] == img.size[0:2]
-    assert confidence is None or confidence.size == img.size[0:2]
+    assert depth_map.shape[0:2] == img.shape[0:2]
+    assert confidence is None or confidence.shape == img.shape[0:2]
     
     return depth_map, confidence
