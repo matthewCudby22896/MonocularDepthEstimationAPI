@@ -18,6 +18,8 @@ OPTIMIZE = False
 model = transform = net_w = net_h = None
 
 def monocular_depth_estimation(image_bgr: ImageNP) -> np.ndarray:
+    global model, transform, net_w, net_h
+
     logger.info("MiDas")
     
     if model is None:
