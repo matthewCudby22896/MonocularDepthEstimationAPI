@@ -1,6 +1,4 @@
 
-import os
-import sys
 import torch
 import numpy as np
 import cv2
@@ -9,11 +7,9 @@ import logging
 
 from mmengine.config import Config
 
-from Metric3D.mono.model.monodepth_model import get_configured_monodepth_model, get_monodepth_model
+from Metric3D.mono.model.monodepth_model import get_configured_monodepth_model
 from Metric3D.mono.utils.running import load_ckpt
-
-
-
+from FlaskServer.types import ImageNP
 
 logger = logging.getLogger(__name__)
 
@@ -71,14 +67,11 @@ def get_model(version: str):
     
     return models[version]
 
-
-def monocular_depth_estimation(version : str, org_rgb : Image, focal_length_px : float) -> np.ndarray:
+def monocular_depth_estimation(version : str, org_rgb : ImageNP, focal_length_px : float) -> np.ndarray:
     model : torch.nn.Module = get_model(version)
     
     focal_length_px = float(focal_length_px)
         
-    logger.info(f"{org_rgb.shape=}")
-    
     h, w = org_rgb.shape[:2]
     intrinsic = [focal_length_px, focal_length_px, w // 2, h // 2] # (f_x, f_y, px, py)
     

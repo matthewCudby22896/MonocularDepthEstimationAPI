@@ -3,6 +3,7 @@ import logging
 import cv2
 import numpy as np
 
+from FlaskServer.types import ImageNP
 from MiDaS.midas.model_loader import load_model
 from MiDaS.run import process
 
@@ -14,7 +15,7 @@ MODEL_PATH = "./MiDaS/weights/dpt_beit_large_512.pt"
 MODEL_TYPE = "dpt_beit_large_512"
 OPTIMIZE = False
 
-def monocular_depth_estimation(image_np: np.ndarray) -> np.ndarray:
+def monocular_depth_estimation(image_np: ImageNP) -> np.ndarray:
     logger.info("MiDas")
     
     # Load MiDaS model
@@ -42,12 +43,10 @@ def monocular_depth_estimation(image_np: np.ndarray) -> np.ndarray:
             sample,
             (net_w, net_h),
             image_rgb.shape[1::-1],
-            OPTIMIZE,
+            optimize=OPTIMIZE,
             use_camera=False
         )
     
     logger.info("Prediction Complete")
-    
-    print(prediction)
 
     return prediction

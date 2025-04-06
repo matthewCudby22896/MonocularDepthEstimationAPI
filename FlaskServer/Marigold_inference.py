@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import torch
 
-from FlaskServer.Metric3D_inference import Image
+from FlaskServer.types import ImageNP
 from Marigold.marigold.marigold_pipeline import MarigoldPipeline
 
 CHECKPOINT_PATH = "./Marigold/checkpoint/marigold-lcm-v1-0"
@@ -15,7 +15,7 @@ BATCH_SIZE = 0
 MATCH_INPUT_RES = True
 PROCESSING_RES = 1064
 
-def monocular_depth_estimation(image : Image,
+def monocular_depth_estimation(image : ImageNP,
                    denoise_steps : int = DENOISING_STEPS,
                    ensemble_size : int = ENSEMBLE_SIZE,
                    seed : int = SEED) -> np.array:
@@ -57,6 +57,7 @@ def monocular_depth_estimation(image : Image,
             generator.manual_seed(seed)
 
         image = cv2_image_to_tensor(image)
+        
         pipe_out = pipe(
                 image,
                 denoising_steps=denoise_steps,
@@ -74,7 +75,7 @@ def monocular_depth_estimation(image : Image,
     return depth_pred
 
 
-def cv2_image_to_tensor(image: np.ndarray) -> torch.Tensor:
+def cv2_image_to_tensor(image: ImageNP) -> torch.Tensor:
     if image is None or not isinstance(image, np.ndarray):
         raise ValueError("Invalid image passed to cv2_image_to_tensor")
 
