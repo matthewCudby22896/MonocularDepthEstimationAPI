@@ -40,6 +40,8 @@ def monocular_depth_estimation(image_bgr : ImageNP,
         torch_dtype=torch.float32,
         local_files_only=True
     )
+    
+    processing_res = pipe.default_processing_resolution
 
     pipe = pipe.to(device)
     logging.info(
@@ -68,7 +70,7 @@ def monocular_depth_estimation(image_bgr : ImageNP,
                 denoising_steps=denoise_steps,
                 ensemble_size=ensemble_size,
                 processing_res=pipe.default_processing_resolution,
-                match_input_res=(PROCESSING_RES > 0),
+                match_input_res=(processing_res > 0),
                 batch_size=0,
                 show_progress_bar=True,
                 resample_method=RESAMPLE_METHOD,
