@@ -15,11 +15,10 @@ MODEL_PATH = "./MiDaS/weights/dpt_beit_large_512.pt"
 MODEL_TYPE = "dpt_beit_large_512"
 OPTIMIZE = False
 
-model = transform = net_w = net_h = None
+model, transform, net_w, net_h = None
 
 def monocular_depth_estimation(image_bgr: ImageNP) -> np.ndarray:
-    global model, transform, net_w, net_h
-
+    
     logger.info("MiDas")
     
     if model is None:

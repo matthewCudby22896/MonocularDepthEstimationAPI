@@ -13,7 +13,10 @@ RESAMPLE_METHOD = 'bilinear'
 SEED = 1 # Ensures results are deterministic
 BATCH_SIZE = 0
 MATCH_INPUT_RES = True
-PROCESSING_RES = 1064
+
+# Will use the default processing resolution instead
+# PROCESSING_RES = 1064 
+
 
 def monocular_depth_estimation(image_bgr : ImageNP,
                    denoise_steps : int = DENOISING_STEPS,
@@ -47,7 +50,7 @@ def monocular_depth_estimation(image_bgr : ImageNP,
         f"Inference settings: checkpoint = `{CHECKPOINT_PATH}`, "
         f"with denoise_steps = {denoise_steps or pipe.default_denoising_steps}, "
         f"ensemble_size = {ensemble_size}, "
-        f"processing resolution = {PROCESSING_RES or pipe.default_processing_resolution}, "
+        f"processing resolution = {pipe.default_processing_resolution}, "
         f"seed = {seed}; "
     )
     
@@ -64,7 +67,7 @@ def monocular_depth_estimation(image_bgr : ImageNP,
                 image,
                 denoising_steps=denoise_steps,
                 ensemble_size=ensemble_size,
-                processing_res=PROCESSING_RES,
+                processing_res=pipe.default_processing_resolution,
                 match_input_res=(PROCESSING_RES > 0),
                 batch_size=0,
                 show_progress_bar=True,
